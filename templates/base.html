@@ -1,0 +1,27 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>
+        {% block meta_title %}{% endblock %} | Elemental Overdrive
+    </title>
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+    <script src="{{ STATIC_URL }}js/lib/three.min.js"></script>
+    <!-- other scripts from child templates -->
+    {% block scripts %}{% endblock %}
+
+</head>
+<body>
+
+<div id="container">
+
+    {% block main %}{% endblock %}
+
+</div>
+
+</body>
+</html>
