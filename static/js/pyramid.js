@@ -1,57 +1,103 @@
-{
+if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 
-    "metadata" :
-    {
-        "formatVersion" : 3.1,
-        "generatedBy"   : "Blender 2.63 Exporter",
-        "vertices"      : 5,
-        "faces"         : 5,
-        "normals"       : 5,
-        "colors"        : 0,
-        "uvs"           : [],
-        "materials"     : 1,
-        "morphTargets"  : 0,
-        "bones"         : 0
-    },
+var container, stats;
 
-    "scale" : 1.000000,
+var camera, scene, renderer;
 
-    "materials": [	{
-	"DbgColor" : 15658734,
-	"DbgIndex" : 0,
-	"DbgName" : "Material",
-	"blending" : "NormalBlending",
-	"colorAmbient" : [0.6400000190734865, 0.6400000190734865, 0.6400000190734865],
-	"colorDiffuse" : [0.6400000190734865, 0.6400000190734865, 0.6400000190734865],
-	"colorSpecular" : [0.5, 0.5, 0.5],
-	"depthTest" : true,
-	"depthWrite" : true,
-	"shading" : "Lambert",
-	"specularCoef" : 50,
-	"transparency" : 1.0,
-	"transparent" : false,
-	"vertexColors" : false
-	}],
+init();
+animate();
 
-    "vertices": [1,0.00185072,-1,1,0.00185078,1,-1,0.00185078,1,-1,0.00185072,-1,0.00556707,1.62695,-0.0055197],
+var pyramid;
 
-    "morphTargets": [],
+var camval = 0.5;
 
-    "normals": [0.67156,-0.312967,-0.67156,0.671041,-0.31196,0.672567,-0.672048,-0.310953,0.672018,-0.672567,-0.31196,-0.671041,0.002289,0.999969,-0.002258],
+function init() {
 
-    "colors": [],
+    container = document.createElement( 'div' );
+    document.body.appendChild( container );
 
-    "uvs": [],
+    camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
+    camera.position.y = 400;
 
-    "faces": [35,0,1,2,3,0,0,1,2,3,34,0,4,1,0,0,4,1,34,1,4,2,0,1,4,2,34,2,4,3,0,2,4,3,34,4,0,3,0,4,0,3],
+    scene = new THREE.Scene();
 
-    "bones" : [],
+    var light, materials;
 
-    "skinIndices" : [],
+    scene.add( new THREE.AmbientLight( 0x404040 ) );
 
-    "skinWeights" : [],
+    light = new THREE.DirectionalLight( 0xffffff );
+    light.position.set( 0, 1, 0 );
+    scene.add( light );
 
-    "animation" : {}
+    materials = [
+        new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 1.0, side: THREE.DoubleSide } ),
+        new THREE.MeshBasicMaterial({ color:0xffffff, wireframe:false, transparent:true, opacity:0.7, side:THREE.DoubleSide })
+    ];
 
+    pyramid = THREE.SceneUtils.createMultiMaterialObject( new THREE.TetrahedronGeometry( 75, 0 ), materials );
+    pyramid.position.set( 0, 0, 0 );
+    scene.add( pyramid );
+
+    var points = [];
+
+    for ( var i = 0; i < 50; i ++ ) {
+
+        points.push( new THREE.Vector3( Math.sin( i * 0.2 ) * 15 + 50, 0, ( i - 5 ) * 2 ) );
+
+    }
+
+    renderer = new THREE.CanvasRenderer( { antialias: true } );
+    renderer.setSize( window.innerWidth, window.innerHeight );
+
+    container.appendChild( renderer.domElement );
+
+    // Render stats
+    stats = new Stats();
+    stats.domElement.style.position = 'absolute';
+    stats.domElement.style.top = '0px';
+    container.appendChild( stats.domElement );
+
+    window.addEventListener( 'resize', onWindowResize, false );
+
+}
+
+function onWindowResize() {
+
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize( window.innerWidth, window.innerHeight );
+
+}
+
+//
+
+function animate() {
+
+    requestAnimationFrame( animate );
+
+    render();
+
+    if (stats) stats.update();
+
+}
+
+function render() {
+
+    camera.position.x = Math.cos( camval ) ;
+    camera.position.y = Math.sin( camval );
+
+    camera.lookAt( pyramid.position );
+
+/*    for ( var i = 0, l = scene.children.length; i < l; i ++ ) {
+
+        var object = scene.children[ i ];
+
+        object.rotation.x = timer * 5;
+        object.rotation.y = timer * 2.5;
+
+    }*/
+
+    renderer.render( scene, camera );
 
 }

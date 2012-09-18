@@ -6,5 +6,19 @@
 {% block scripts %}
     <script src="{{ STATIC_URL }}js/init.js"></script>
 
+    <style>
+        body {
+            font-family: Monospace;
+            background-color: #000;
+            margin: 0px;
+            overflow: hidden;
+        }
+    </style>
+
+{% endblock %}
+
+
+{% block main %}
+    {% comment %}<script src="{{ STATIC_URL }}js/pyramid.js"></script>{% endcomment %}
 {% endblock %}
 
