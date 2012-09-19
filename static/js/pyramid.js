@@ -7,7 +7,7 @@ var camera, scene, renderer;
 init();
 animate();
 
-var pyramid;
+var headerPlane, pyramid;
 
 var camval = 0.5;
 
@@ -17,11 +17,11 @@ function init() {
     document.body.appendChild( container );
 
     camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
-    camera.position.y = 400;
+    camera.position.set(0,-100,800);
 
     scene = new THREE.Scene();
 
-    var light, materials;
+    var light, headerPlaneMaterials, pyramidMaterials;
 
     scene.add( new THREE.AmbientLight( 0x404040 ) );
 
@@ -29,22 +29,32 @@ function init() {
     light.position.set( 0, 1, 0 );
     scene.add( light );
 
-    materials = [
+    headerPlaneMaterials = [
+        new THREE.MeshBasicMaterial({ color:0x404040, wireframe:false, transparent:true, opacity:0.7, side:THREE.DoubleSide })
+    ];
+
+    pyramidMaterials = [
         new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 1.0, side: THREE.DoubleSide } ),
         new THREE.MeshBasicMaterial({ color:0xffffff, wireframe:false, transparent:true, opacity:0.7, side:THREE.DoubleSide })
     ];
 
-    pyramid = THREE.SceneUtils.createMultiMaterialObject( new THREE.TetrahedronGeometry( 75, 0 ), materials );
+    headerPlane = THREE.SceneUtils.createMultiMaterialObject(new THREE.PlaneGeometry(300, 300, 2, 2), headerPlaneMaterials);
+    headerPlane.position.set(0, 0, 0);
+    scene.add(headerPlane);
+
+    pyramid = THREE.SceneUtils.createMultiMaterialObject( new THREE.PyramidGeometry( 75, 1 ), pyramidMaterials );
     pyramid.position.set( 0, 0, 0 );
     scene.add( pyramid );
 
-    var points = [];
+
+
+/*    var points = [];
 
     for ( var i = 0; i < 50; i ++ ) {
 
         points.push( new THREE.Vector3( Math.sin( i * 0.2 ) * 15 + 50, 0, ( i - 5 ) * 2 ) );
 
-    }
+    }*/
 
     renderer = new THREE.CanvasRenderer( { antialias: true } );
     renderer.setSize( window.innerWidth, window.innerHeight );
@@ -84,8 +94,8 @@ function animate() {
 
 function render() {
 
-    camera.position.x = Math.cos( camval ) ;
-    camera.position.y = Math.sin( camval );
+/*    camera.position.x = Math.cos( camval ) ;
+    camera.position.y = Math.sin( camval );*/
 
     camera.lookAt( pyramid.position );
 

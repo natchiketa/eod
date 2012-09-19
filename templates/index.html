@@ -9,7 +9,7 @@
     <style>
         body {
             font-family: Monospace;
-            background-color: #000;
+            background: #000 url(/static/images/fol_bg.png32x37.jpg);
             margin: 0px;
             overflow: hidden;
         }
@@ -19,6 +19,7 @@
 
 
 {% block main %}
-    {% comment %}<script src="{{ STATIC_URL }}js/pyramid.js"></script>{% endcomment %}
+    <script src="{{ STATIC_URL }}js/eodPrimitives.js"></script>
+    <script src="{{ STATIC_URL }}js/pyramid.js"></script>
 {% endblock %}
 
