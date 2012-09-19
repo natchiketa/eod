@@ -10,7 +10,7 @@ var camera, controls, scene, renderer;
 //constructs and empty object and attach controls to it
 var dummy = new THREE.Object3D();
 
-var headerPlane, pyramid;
+var bgPlane, headerPlane, pyramid;
 
 var camval = 0.5;
 
@@ -24,12 +24,11 @@ function init() {
 
     scene = new THREE.Scene();
 
-    camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 3000);
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 3000);
     camera.position.set(0, normalizedScrollTop(), 500);
     scene.add(camera);
 
     var light, headerPlaneMaterials, pyramidMaterials;
-
 
 
     scene.add(new THREE.AmbientLight(0x404040));
@@ -46,6 +45,20 @@ function init() {
         new THREE.MeshBasicMaterial({ color:0xffffff, wireframe:false, transparent:true, opacity:0.5, side:THREE.DoubleSide }),
         new THREE.MeshBasicMaterial({ color:0x000000, wireframe:true, transparent:true, opacity:1.0, side:THREE.DoubleSide })
     ];
+
+    var bgTexture = new THREE.MeshBasicMaterial({
+        map:THREE.ImageUtils.loadTexture('/static/images/fol_bg.png128x128.jpg')
+    });
+    bgTexture.map.wrapS = bgTexture.map.wrapT = THREE.RepeatWrapping;
+    bgTexture.map.repeat.set(128, 128);
+    bgTexture.map.needsUpdate = true;
+
+    // background
+    bgPlane = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000), bgTexture);
+    bgPlane.overdraw = true;
+    bgPlane.position.set(0, 300, -100);
+
+    scene.add(bgPlane);
 
     headerPlane = THREE.SceneUtils.createMultiMaterialObject(new THREE.PlaneGeometry(5000, 200, 6, 2), headerPlaneMaterials);
     headerPlane.position.set(0, 300, 0);
@@ -75,11 +88,11 @@ function init() {
     scene.add(pyramid);
 
     // init pyramid controls
-/*    controls = new THREE.FlyControls(pyramid, container);
-    controls.movementSpeed = 0;
-    controls.rollSpeed = 0.001;
-    controls.autoForward = false;
-    controls.dragToLook = true;*/
+    /*    controls = new THREE.FlyControls(pyramid, container);
+     controls.movementSpeed = 0;
+     controls.rollSpeed = 0.001;
+     controls.autoForward = false;
+     controls.dragToLook = true;*/
 
     // Render stats
     stats = new Stats();
