@@ -8,24 +8,14 @@
     <script src="{{ STATIC_URL }}js/pyramid.js"></script>
     <script src="{{ STATIC_URL }}js/init.js"></script>
 
-    <style>
-        body {
-            font-family: Monospace,serif;
-            background: #000/* url(/static/images/fol_bg.png32x37.jpg)*/;
-            margin: 0;
-            overflow: visible;
-            height: 3000px;
-        }
-
-        canvas {
-            position: fixed;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css">
 
 {% endblock %}
 
 
 {% block main %}
+
+    <div id="bgBlock"></div>
 
 {% endblock %}
 

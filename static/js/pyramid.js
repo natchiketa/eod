@@ -24,8 +24,8 @@ function init() {
 
     scene = new THREE.Scene();
 
-    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 3000);
-    camera.position.set(0, normalizedScrollTop(), 500);
+    camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 3000);
+    camera.position.set(0, DEFAULT_CAMERA_Y + normalizedScrollTop(), 500);
     scene.add(camera);
 
     var light, headerPlaneMaterials, pyramidMaterials;
@@ -46,7 +46,7 @@ function init() {
         new THREE.MeshBasicMaterial({ color:0x000000, wireframe:true, transparent:true, opacity:1.0, side:THREE.DoubleSide })
     ];
 
-    var bgTexture = new THREE.MeshBasicMaterial({
+/*    var bgTexture = new THREE.MeshBasicMaterial({
         map:THREE.ImageUtils.loadTexture('/static/images/fol_bg.png128x128.jpg')
     });
     bgTexture.map.wrapS = bgTexture.map.wrapT = THREE.RepeatWrapping;
@@ -58,7 +58,7 @@ function init() {
     bgPlane.overdraw = true;
     bgPlane.position.set(0, 300, -100);
 
-    scene.add(bgPlane);
+    scene.add(bgPlane);*/
 
     headerPlane = THREE.SceneUtils.createMultiMaterialObject(new THREE.PlaneGeometry(5000, 200, 6, 2), headerPlaneMaterials);
     headerPlane.position.set(0, 300, 0);
@@ -100,6 +100,8 @@ function init() {
     stats.domElement.style.top = '0px';
     container.appendChild(stats.domElement);
 
+    $('#bgBlock').css('top', -100 + normalizedScrollTop() * 0.01 );
+
     window.addEventListener('resize', onWindowResize, false);
     window.addEventListener('scroll', onWindowScroll, false);
 
@@ -118,12 +120,13 @@ function normalizedScrollTop(scale) {
     scale = (typeof scale == 'undefined') ? DEFAULT_CAMERA_SCROLL_SCALE : scale;
     var docSt = $(document).scrollTop(), docHt = $(document).height();
     var norm = Math.sqrt(docHt * docHt - docSt * docSt);
-    return DEFAULT_CAMERA_Y + (scale * (docHt - docSt) / norm);
+    return (scale * (docHt - docSt) / norm);
 }
 
 function onWindowScroll() {
 
-    camera.position.y = normalizedScrollTop();
+    camera.position.y = DEFAULT_CAMERA_Y + normalizedScrollTop();
+    $('#bgBlock').css('top', -100 + normalizedScrollTop() );
 
 }
 
