@@ -1,5 +1,8 @@
 if (!Detector.webgl) Detector.addGetWebGLMessage();
 
+var DEFAULT_CAMERA_Y = 100,
+    DEFAULT_CAMERA_SCROLL_SCALE = 50;
+
 var container, stats;
 
 var camera, controls, scene, renderer;
@@ -21,19 +24,13 @@ function init() {
 
     scene = new THREE.Scene();
 
-    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 3000);
-    camera.position.set(0, 100, 2000);
+    camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 3000);
+    camera.position.set(0, normalizedScrollTop(), 500);
     scene.add(camera);
 
-/*
-    controls = new THREE.FlyControls(camera, container);
-    controls.movementSpeed = 10;
-    controls.rollSpeed = 0.005;
-    controls.autoForward = false;
-    controls.dragToLook = true;
-*/
-
     var light, headerPlaneMaterials, pyramidMaterials;
+
+
 
     scene.add(new THREE.AmbientLight(0x404040));
 
@@ -46,24 +43,43 @@ function init() {
     ];
 
     pyramidMaterials = [
-        new THREE.MeshBasicMaterial({ color:0xffffff, wireframe:false, transparent:true, opacity:0.8, side:THREE.DoubleSide }),
+        new THREE.MeshBasicMaterial({ color:0xffffff, wireframe:false, transparent:true, opacity:0.5, side:THREE.DoubleSide }),
         new THREE.MeshBasicMaterial({ color:0x000000, wireframe:true, transparent:true, opacity:1.0, side:THREE.DoubleSide })
     ];
 
-    headerPlane = THREE.SceneUtils.createMultiMaterialObject(new THREE.PlaneGeometry(5000, 300, 6, 2), headerPlaneMaterials);
+    headerPlane = THREE.SceneUtils.createMultiMaterialObject(new THREE.PlaneGeometry(5000, 200, 6, 2), headerPlaneMaterials);
     headerPlane.position.set(0, 300, 0);
     headerPlane.dynamic = true;
-    headerPlane.rotation.x =90;
+    headerPlane.rotation.x = 90;
     scene.add(headerPlane);
 
-//    camera.lookAt( headerPlane.position );
+    var pg = new THREE.Geometry();
+    pg.vertices = [
+        new THREE.Vector3(0, 0, 1),
+        new THREE.Vector3(-0.86603, 0, -0.5),
+        new THREE.Vector3(0.86603, 0, -0.5),
+        new THREE.Vector3(0, 0.86603, 0)
+    ];
+    pg.faces = [
+        new THREE.Face3(0, 1, 3),
+        new THREE.Face3(1, 2, 3),
+        new THREE.Face3(2, 0, 3),
+        new THREE.Face3(0, 1, 2)
+    ];
 
-    /*
-     pyramid = THREE.SceneUtils.createMultiMaterialObject( new THREE.PyramidGeometry( 75, 1 ), pyramidMaterials );
-     pyramid.position.set( 0, 0, 0 );
-     scene.add( pyramid );
-     */
+    pyramid = THREE.SceneUtils.createMultiMaterialObject(pg, pyramidMaterials);
+    pyramid.position.set(300, 340, 0);
+    pyramid.dynamic = true;
+    pyramid.rotation.x = 300;
+    pyramid.scale.x = pyramid.scale.y = pyramid.scale.z = 70
+    scene.add(pyramid);
 
+    // init pyramid controls
+/*    controls = new THREE.FlyControls(pyramid, container);
+    controls.movementSpeed = 0;
+    controls.rollSpeed = 0.001;
+    controls.autoForward = false;
+    controls.dragToLook = true;*/
 
     // Render stats
     stats = new Stats();
@@ -85,9 +101,16 @@ function onWindowResize() {
 
 }
 
+function normalizedScrollTop(scale) {
+    scale = (typeof scale == 'undefined') ? DEFAULT_CAMERA_SCROLL_SCALE : scale;
+    var docSt = $(document).scrollTop(), docHt = $(document).height();
+    var norm = Math.sqrt(docHt * docHt - docSt * docSt);
+    return DEFAULT_CAMERA_Y + (scale * (docHt - docSt) / norm);
+}
+
 function onWindowScroll() {
 
-    camera.position.y = 100 - $(document).scrollTop();
+    camera.position.y = normalizedScrollTop();
 
 }
 
@@ -96,7 +119,7 @@ function animate() {
 
     requestAnimationFrame(animate);
 
-    controls.update(1);
+//    controls.update(1);
     render();
 
     if (stats) stats.update();
@@ -104,19 +127,6 @@ function animate() {
 }
 
 function render() {
-
-    /*    camera.position.x = Math.cos( camval ) ;
-     camera.position.y = Math.sin( camval );*/
-
-
-    /*    for ( var i = 0, l = scene.children.length; i < l; i ++ ) {
-
-     var object = scene.children[ i ];
-
-     object.rotation.x = timer * 5;
-     object.rotation.y = timer * 2.5;
-
-     }*/
 
     renderer.render(scene, camera);
 
